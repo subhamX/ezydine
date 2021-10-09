@@ -1,19 +1,31 @@
 
 import Head from 'next/head'
-import { AnnotationIcon, GlobeAltIcon, LightningBoltIcon, ScaleIcon } from '@heroicons/react/outline'
+import { AnnotationIcon, GlobeAltIcon, ShieldCheckIcon, LightningBoltIcon, ScaleIcon, CogIcon, PaperAirplaneIcon} from '@heroicons/react/outline'
 
 const features = [
   {
-    name: 'Dining Hall Capacities',
+    name: 'Instant Information',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Immediately inform yourself about the dining hall capacities on the front page. No more having to visit three different pages.',
     icon: GlobeAltIcon,
   },
   {
     name: 'Streamlined Interface',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
-    icon: ScaleIcon,
+      'Ezydine is fast, sleek, readable, and responsive. Don\'t waste time waiting for things to load or figuring out what\'s where. ',
+    icon: PaperAirplaneIcon,
+  },
+  {
+    name: 'Smart Predictions',
+    description:
+      'Using machine learning, Ezydine predicts dining hall capacities for future times based on previous data. This way, you can plan your meal schedule ahead of time',
+    icon: CogIcon,
+  },
+  {
+    name: 'Slow the Spread',
+    description:
+      'By using Ezydine to avoid crowds and ease the dining hall crunch, you can help slow down COVID-19 transmissions.',
+    icon: ShieldCheckIcon,
   },
 ]
 
