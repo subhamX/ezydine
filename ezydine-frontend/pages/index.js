@@ -47,7 +47,8 @@ function returnThumbnail(e, key, props){
           <div className='px-3'>
             <div className="text-right">
               <span className="text-xs font-semibold inline-block text-purple-600">
-                {current_crowd_percent}%
+                {current_crowd_percent}%  Capacity
+
               </span>
             </div>
             <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-purple-200">
