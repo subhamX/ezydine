@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("SQLITE_DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Spot {
+  spotId          Int        @id @default(autoincrement())
+  hallName        String
+  description     String
+  latitude        Decimal
+  longitude       Decimal
+  // TODO: See if we can find closed thing using timings only
+  isClosed        Boolean
+  capacity        Int
+  crowdCount      Int
+  // START_TIME___END_TIME####START_TIME___END_TIME...
+  timings         String
+  ClientCountLogs CrowdLog[]
+  Meal            Meal[]
+}
+
+model CrowdLog {
+  spotId      Int
+  spot        Spot     @relation(fields: [spotId], references: [spotId])
+  timestamp   DateTime
+  clientCount Int
+
+  @@unique([spotId, timestamp])
+}
+
+// any manager can add a meal and delete too
+model Meal {
+  mealId      Int    @id @default(autoincrement())
+  spotId      Int
+  spot        Spot   @relation(fields: [spotSpotId], references: [spotId])
+  type        String
+  title       String
+  image       String
+  description String
+  // calories      Boolean
+  // cholesterol   Boolean
+  // fiber         Boolean
+  // protein       Boolean
+  // saturated_fat Boolean
+  // sodium        Boolean
+  // sugars        Boolean
+  // total_carbs   Boolean
+  // total_fat     Boolean
+  // trans_fat     Boolean
+  // calcium       Boolean
+  // iron          Boolean
+  // mono_fat      Boolean
+  // poly_fat      Boolean
+  // potassium     Boolean
+  // vitamin_a     Boolean
+  // vitamin_c     Boolean
+  spotSpotId  Int
+}
+
+// class DiningHallMenuItem(models.Model):
+//     hall_id = models.ManyToManyField(to=DiningHall)
+//     item_name=models.CharField(max_length=1000)
+//     # put all [ingredients] as comma separated
+//     ingredients=models.CharField(max_length=1000)
