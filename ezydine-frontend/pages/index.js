@@ -2,8 +2,38 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { AnnotationIcon, GlobeAltIcon, LightningBoltIcon, ScaleIcon } from '@heroicons/react/outline'
 import Header from '../components/header.js'
+import axios from 'axios';
+import { useState } from 'react';
 
-export default function Home() {
+
+export async function getServerSideProps() {
+  // Fetch data from external API
+  try {
+    const res = await fetch('https://dining.columbia.edu/sites/default/files/cu_dining/cu_dining_nodes.json?1633558414');
+    const data = await res.json();
+    return { props: {spots: data} };
+  }
+  catch (error){
+    return { notFound: true };
+  }
+}
+
+
+// Home.getInitialProps = async ctx => {
+  // try {
+  //   const res = await axios.get('https://dining.columbia.edu/sites/default/files/cu_dining/cu_dining_nodes.json?1633558414');
+  //   const spots = spots.data;
+  //   console.log(spots);
+  //   return { spots };
+  // } catch (error) {
+  //   return { error };
+  // }
+// };
+
+
+
+export default function Home(props) {
+
 
   const data = [
     {
@@ -29,17 +59,21 @@ export default function Home() {
     },
   ]
 
+  const spots = props.spots.locations.filter(location => location.display_crowd == "1");
+
+
   return (
     <div>
     <Header />
       <div className='px-24 mt-10 grid lg:grid-cols-3 gap-10'>
-        {data.map((e, key) => (
-          <div>
-            <Link href={`/hall/${e.hall_id}/info/`}>
+        {spots.map((e, key) => (
+          <div key={key}>
+            <Link href={`/hall/${e.crowd_id}/info/`}>
+
               <div className="rounded bg-white cursor-pointer border-gray-200 shadow-md overflow-hidden relative hover:shadow-lg" key={key}>
                 <img src={`https://source.unsplash.com/random?sig=${key}`} alt="curry" className="h-32 sm:h-48 w-full object-cover" />
                 <div className="m-4">
-                  <span className="font-bold">{e.name}</span>
+                  <span className="font-bold">{e.title.toString()}</span>
                 </div>
                 <div className="absolute top-0 ml-2  mt-2 text-xs uppercase font-bold rounded-full">
                   {e.closed ? <span className='bg-red-200 p-1 rounded-lg text-red-600'>CLOSED</span> : <span className='bg-green-200 p-1 rounded-lg text-green-600'>OPEN</span>}
