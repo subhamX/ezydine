@@ -4,6 +4,8 @@ import fs from 'fs'
 
 
 // ! NOTE: Comment the ones which you don't want to execute
-// addSpots();
-normalizeLogs(fs.readFileSync('./logs.txt', {encoding: 'utf-8'}))
+(async () => {
+    await addSpots();
+    await normalizeLogs(fs.readFileSync('./logs.txt', { encoding: 'utf-8' }))
+})();
 
