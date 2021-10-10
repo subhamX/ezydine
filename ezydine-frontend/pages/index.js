@@ -1,20 +1,9 @@
-import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
-import {
-  AnnotationIcon,
-  GlobeAltIcon,
-  LightningBoltIcon,
-  ScaleIcon,
-} from "@heroicons/react/outline";
 import Header from "../components/header.js";
 import Navbar from "../components/navbar.js";
-
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useDataContext } from "../components/DataProvider";
-import { fetchAllSpotsEndpoint } from "../apis.js";
+import { fetchAllSpotsEndpoint } from "../apis"
+import { Loading } from "../components/Loading.js";
 
 const createThumbnail = (spot) => {
   const crowd_percentage = Math.floor((spot.crowdCount * 100) / spot.capacity);
@@ -26,7 +15,7 @@ const createThumbnail = (spot) => {
           key={spot.spotId}
         >
           <img
-            src={`/images/${spot.spotId}.png`}
+            src={spot.imageLink}
             alt="curry"
             className="h-32 sm:h-48 w-full object-cover"
           />
@@ -85,19 +74,20 @@ export default function Home() {
   const [isLoading, setisLoading] = useState(true);
   if (isLoading) {
     return (
-      <div className="text-center mx-2 bg-purple-200 text-purple-700 font-bold rounded p-2">
-        Loading
-      </div>
+      <Loading />
     );
   }
-  const spots = data.slice(5, 8);
+  const spots = data;
   return (
     <div className='mb-40'>
       <Navbar />
       <Header />
-      <div className="px-24 mt-10 grid lg:grid-cols-3 gap-10">
-        {spots.map((spot) => createThumbnail(spot))}
-      </div>
+      {spots && spots.length ?
+        <div className="px-24 mt-10 grid lg:grid-cols-3 gap-10">
+          {spots.map((spot) => createThumbnail(spot))}
+        </div>
+        : <div className='font-extrabold text-center mx-auto'>No spots available 😢</div>
+      }
     </div>
   );
 }

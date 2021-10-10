@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../../components/navbar.js'
 import { fetchSingleSpotsEndpoint } from "../../../apis.js";
 import AdminDescription from "../../../components/AdminDescription.js";
+import { Loading } from "../../../components/Loading.js";
 
 
 // const products = [
@@ -20,9 +21,10 @@ import AdminDescription from "../../../components/AdminDescription.js";
 //   // More products...
 // ]
 
-const crowdData = {
-  labels: ['5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'],
-  data: [null, null, null, null, 56, 55, 40],
+const getCrowdData = ({ labels, data }) => ({
+  // labels: ['5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'],
+  // data: [null, null, null, null, 56, 55, 40],
+  labels, data,
   datasets: [
     {
       label: 'Capacity',
@@ -66,7 +68,7 @@ const crowdData = {
       pointHitRadius: 10,
     }
   ]
-};
+});
 
 const navigation = [
   { name: 'Product', href: '#' },
@@ -105,14 +107,13 @@ export default function HallInfo() {
 
   if (isLoading) {
     return (
-      <div className="text-center mx-2 bg-purple-200 text-purple-700 font-bold rounded p-2">
-        Loading
-      </div>
+      <Loading />
     );
   }
 
   const spotData = data['spotData']
   const menuItems = data['menuItems']
+  const crowdData = data['crowdData']
 
   return (
     <div>
@@ -128,7 +129,7 @@ export default function HallInfo() {
           </div>
           <div className="line-graph">
             <Line
-              data={crowdData}
+              data={getCrowdData(crowdData)}
               width={"100%"}
               height={"50rem"}
               style={{ maxHeight: 250 }}
@@ -143,6 +144,10 @@ export default function HallInfo() {
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">Menu Items</h2>
 
           <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            {menuItems && menuItems.length == 0 ?
+              <div className='w-100'>
+                No menu items found.
+              </div> : null}
             {menuItems.map((product) => (
               <div key={product.mealId} className="shadow-md border-2 p-2 rounded group relative">
                 <div className="w-full min-h-80  bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
@@ -215,9 +220,18 @@ export default function HallInfo() {
         </div>
 
 
-        <div className='max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8'>
+        <div className='max-w-2xl mx-auto py-16 sm:py-24 sm:px-6 lg:max-w-7xl '>
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 pb-5">Location</h2>
-          <div className="mapouter mx-auto"><div className="gmap_canvas"><iframe width={1080} height={500} id="gmap_canvas" src="https://maps.google.com/maps?q=JJ%20Place,%20columbia&t=&z=15&ie=UTF8&iwloc=&output=embed" frameBorder={0} scrolling="no" marginHeight={0} marginWidth={0} /><a href="https://www.whatismyip-address.com" /><br /><style dangerouslySetInnerHTML={{ __html: ".mapouter{position:relative;text-align:right;height:500px;width:1080px;}" }} /><a href="https://www.embedgooglemap.net">google maps in html</a><style dangerouslySetInnerHTML={{ __html: ".gmap_canvas {overflow:hidden;background:none!important;height:500px;width:1080px;}" }} /></div></div>
+          <div className="mapouter mx-auto w-100">
+            <div className="gmap_canvas">
+              <iframe width='100%' height={500} id="gmap_canvas" src={`https://maps.google.com/maps?q=${spotData.hallName}&t=&z=15&ie=UTF8&iwloc=&output=embed`} frameBorder={0} scrolling="no" marginHeight={0} marginWidth={0} />
+              {/* <a href="https://www.whatismyip-address.com" /> */}
+              {/* <br /> */}
+              {/* <style dangerouslySetInnerHTML={{ __html: ".mapouter{position:relative;text-align:right;height:500px;width:1080px;}" }} /> */}
+              {/* <a href="https://www.embedgooglemap.net">google maps in html</a> */}
+              {/* <style dangerouslySetInnerHTML={{ __html: `.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:${window.innerWidth};}` }} /> */}
+            </div>
+          </div>
         </div>
 
 

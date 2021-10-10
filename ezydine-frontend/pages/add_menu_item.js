@@ -103,7 +103,7 @@ function AddMenuItem() {
         <div>
           <Link href={`/`}>
             <img
-              className="mx-auto h-12 w-auto"
+              className="mx-auto h-12 w-auto cursor-pointer"
               src="/images/ezydine-logo.png"
               alt="Workflow"
             />

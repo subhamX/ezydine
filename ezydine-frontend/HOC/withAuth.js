@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { Loading } from "../components/Loading";
 import { useUserStore } from "../stores/useUserStore";
 
 const withAuth = (WrappedComponent) => {
@@ -10,13 +11,11 @@ const withAuth = (WrappedComponent) => {
     const Router = useRouter();
 
     if (isLoading) {
-      return < div className="text-center mx-2 bg-purple-200 text-purple-700 font-bold rounded p-2" >
-        Loading
-      </div >
+      return <Loading />
     }
     if (currentUser === null) {
       Router.replace("/login/");
-    }else{
+    } else {
       return <WrappedComponent {...props} />;
     }
     return null;

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "../stores/useUserStore";
 import axios from "axios";
 import { authCheckEndpoint } from "../apis";
+import { Loading } from "../components/Loading";
 
 export default function App({ Component, pageProps }) {
   const setUser = useUserStore((e) => e.setUser);
@@ -31,9 +32,7 @@ export default function App({ Component, pageProps }) {
   const [isLoading, setisLoading] = useState(true);
   if (isLoading) {
     return (
-      <div className="text-center mx-2 bg-purple-200 text-purple-700 font-bold rounded p-2">
-        Loading
-      </div>
+      <Loading />
     );
   }
 

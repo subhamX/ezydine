@@ -1,7 +1,7 @@
 venv
 __pycache__
 *.sqlite3
-scripts/logs.txt
+**/logs.txt
 
 dist/
 scripts/node_modules/
