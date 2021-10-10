@@ -1,6 +1,9 @@
 
 
 const serverUrl = 'http://localhost:8000'
+if (process.env.NODE_ENV === 'production') {
+    serverUrl = process.env.PROD_SERVER_URL
+}
 // const serverUrl='https://subhamx-codespaces-vjv5r4q92wpj5-8000.githubpreview.dev'
 export const registerEndpoint = `${serverUrl}/auth/register/`
 export const loginEndpoint = `${serverUrl}/auth/login/`
