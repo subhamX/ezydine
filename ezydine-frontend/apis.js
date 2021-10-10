@@ -1,6 +1,6 @@
 
 
-const serverUrl = 'http://localhost:8000'
+let serverUrl = 'http://localhost:8000'
 if (process.env.NODE_ENV === 'production') {
     serverUrl = process.env.PROD_SERVER_URL
 }

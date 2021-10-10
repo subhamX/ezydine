@@ -7,18 +7,18 @@ import { fetchSingleSpotsEndpoint } from "../../../apis.js";
 import AdminDescription from "../../../components/AdminDescription.js";
 
 
-const products = [
-  {
-    id: 1,
-    name: 'Apple Pie',
-    href: '#',
-    imageSrc: 'https://i.ytimg.com/vi/RoHWiA6pogg/maxresdefault.jpg',
-    imageAlt: "Apple pie.",
-    price: '$5',
-    // color: 'Black',
-  },
-  // More products...
-]
+// const products = [
+//   {
+//     id: 1,
+//     name: 'Apple Pie',
+//     href: '#',
+//     imageSrc: 'https://i.ytimg.com/vi/RoHWiA6pogg/maxresdefault.jpg',
+//     imageAlt: "Apple pie.",
+//     price: '$5',
+//     // color: 'Black',
+//   },
+//   // More products...
+// ]
 
 const crowdData = {
   labels: ['5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'],
@@ -88,8 +88,8 @@ export default function HallInfo() {
       // Fetch data from external API
       try {
         const res = await fetch(fetchSingleSpotsEndpoint(hallId));
-        const data = await res.json();
-        setData(data);
+        const data1 = await res.json();
+        setData(data1);
         setisLoading(false);
       }
       catch (error) {
