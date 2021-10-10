@@ -3,6 +3,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { AnnotationIcon, GlobeAltIcon, LightningBoltIcon, ScaleIcon } from '@heroicons/react/outline'
 import Header from '../components/header.js'
+import Navbar from '../components/navbar.js'
+
 import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -26,7 +28,7 @@ const createThumbnail = (spot) => {
   const crowd_percentage = Math.floor(spot.crowdCount  * 100/ spot.capacity);
   return(
     <div key={spot.spotId}>
-      <Link href={`/hall/${spot.spotId}/info/`} state={{ spot: spot }}>
+      <Link href={`/hall/${spot.spotId}/info/`}>
 
         <div className="rounded bg-white cursor-pointer border-gray-200 shadow-md overflow-hidden relative hover:shadow-lg" key={spot.spotId}>
           <img src={`/images/${spot.spotId}.png`} alt="curry" className="h-32 sm:h-48 w-full object-cover" />
@@ -62,6 +64,7 @@ export default function Home({data}) {
   const spots = data.slice(5, 8);
   return (
     <div>
+    <Navbar />
     <Header />
       <div className='px-24 mt-10 grid lg:grid-cols-3 gap-10'>
         {spots.map(spot => createThumbnail(spot))}
