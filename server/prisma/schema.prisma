@@ -10,6 +10,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Admin can add Spot
 model Spot {
   spotId          Int        @id @default(autoincrement())
   hallName        String
@@ -24,6 +25,8 @@ model Spot {
   timings         String
   ClientCountLogs CrowdLog[]
   Meal            Meal[]
+  admin           User       @relation(fields: [adminEmail], references: [email])
+  adminEmail      String
 }
 
 model CrowdLog {
@@ -33,6 +36,19 @@ model CrowdLog {
   clientCount Int
 
   @@unique([spotId, timestamp])
+}
+
+model User {
+  email           String @id
+  name            String
+  hashed_password String
+  role            Role   @default(MANAGER)
+  Spot            Spot[]
+}
+
+enum Role {
+  MANAGER
+  ADMIN
 }
 
 // any manager can add a meal and delete too
@@ -64,8 +80,8 @@ model Meal {
   spotSpotId  Int
 }
 
-// class DiningHallMenuItem(models.Model):
-//     hall_id = models.ManyToManyField(to=DiningHall)
-//     item_name=models.CharField(max_length=1000)
-//     # put all [ingredients] as comma separated
-//     ingredients=models.CharField(max_length=1000)
+model session {
+  sid    String   @id
+  sess   Json
+  expire DateTime
+}

@@ -1,10 +1,75 @@
-import Express from 'express'
+import Express, { Request, Response } from 'express'
 import spot from './routes/spot'
+import auth from './auth/index'
+import cookie_parser from 'cookie-parser';
+import session from 'express-session';
+import passport from 'passport';
+import cors from 'cors';
+import Pool from 'pg-pool';
+import { User as UserSchema } from '@prisma/client'
 
 const app = Express();
 
-app.use(Express.json())
+declare global {
+    namespace Express {
+        interface User extends UserSchema {
+
+        }
+    }
+}
+
+
+app.set('trust proxy', 1);
+
+// middleware function to force HTTPS
+app.use((req: Request, res: Response, next: any) => {
+    // The 'x-forwarded-proto' check is for Heroku
+    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+        return res.redirect('https://' + req.get('host') + req.url);
+    }
+    next();
+});
+
+// Configuring connect pg for persistent sessions
+const pgSession = require('connect-pg-simple')(session);
+app.use(
+    cors({
+        origin: process.env.CLIENT_URL as string ?? '/',
+        credentials: true,
+    })
+);
+// configuring express session
+app.use(
+    session({
+        store: new pgSession({
+            pool: new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } }),
+            tableName: 'session'
+        }),
+        saveUninitialized: false,
+        secret: (process.env.SESSION_SECRET as string ?? 'TEST'),
+        resave: false,
+        cookie: process.env.NODE_ENV === 'production' ? { secure: true, sameSite: 'strict' } : {},
+    })
+);
+// Configuring cookie and json parser middleware
+app.use(cookie_parser())
+
+app.use(Express.json());
+
+
+
+
+// Configuring passport middleware for authentication
+require("./auth/passport_config")(passport);
+app.use(passport.initialize());
+app.use(passport.session())
+
+
+
 app.use('/spot/', spot);
+app.use('/auth/', auth);
+
+
 
 
 app.get('/', (req, res) => {
