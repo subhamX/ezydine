@@ -4,6 +4,10 @@ import {Line} from 'react-chartjs-2';
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
+import { useLocation } from 'react-router-dom'
+import Parser from 'html-react-parser';
+
+
 
 const products = [
   {
@@ -18,7 +22,7 @@ const products = [
   // More products...
 ]
 
-const data = {
+const crowdData = {
   labels: ['5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'],
   datasets: [
     {
@@ -74,23 +78,37 @@ const navigation = [
 ]
 
 
-const HallInfo = () => {
+export async function getServerSideProps() {
+  // Fetch data from external API
+  try {
+    const res = await fetch('https://ezydine.herokuapp.com/spot/all');
+    const data = await res.json()
+    return { props: {data: data} };
+  }
+  catch (error){
+    return { notFound: true };
+  }
+}
+
+const HallInfo = ({ data }) => {
     const router = useRouter();
-    const { hall_id } = router.query;
+    const hallId = router.query.hall_id
+    const spotData = data[hallId];
+    console.log(data);
+    console.log(spotData);
     return (
       <div className="py-12 bg-white">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="lg:text-center">
              <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-               Dining Hall {hall_id}
+               {spotData.hallName.replace("&#039;", "\'")}
              </p>
              <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-               Dining Hall {hall_id} is the casual and comfortable weekend and late-night destination! Featuring an Angus Steak Burger and other specialty sandwiches plus fries, wings, smoothies, and more. Located lower level of John Jay Hall.
              </p>
            </div>
            <div className="line-graph">
              <Line
-               data={data}
+               data={crowdData}
                width={"100%"}
                height={"20rem"}
              />
