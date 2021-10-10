@@ -53,31 +53,21 @@ enum Role {
 
 // any manager can add a meal and delete too
 model Meal {
-  mealId      Int    @id @default(autoincrement())
-  spotId      Int
-  spot        Spot   @relation(fields: [spotSpotId], references: [spotId])
-  type        String
-  title       String
-  image       String
-  description String
-  // calories      Boolean
-  // cholesterol   Boolean
-  // fiber         Boolean
-  // protein       Boolean
-  // saturated_fat Boolean
-  // sodium        Boolean
-  // sugars        Boolean
-  // total_carbs   Boolean
-  // total_fat     Boolean
-  // trans_fat     Boolean
-  // calcium       Boolean
-  // iron          Boolean
-  // mono_fat      Boolean
-  // poly_fat      Boolean
-  // potassium     Boolean
-  // vitamin_a     Boolean
-  // vitamin_c     Boolean
-  spotSpotId  Int
+  mealId              Int     @id @default(autoincrement())
+  spotId              Int
+  spot                Spot    @relation(fields: [spotId], references: [spotId])
+  type                String
+  title               String
+  image               String
+  description         String
+  total_fat           Decimal
+  saturated_fat       Decimal
+  sodium              Decimal
+  total_carbohydrate  Decimal
+  total_dietary_fiber Decimal
+  total_protein       Decimal
+  total_carbon        Decimal
+  total_water_used    Decimal
 }
 
 model session {

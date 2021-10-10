@@ -23,7 +23,7 @@ app.get('/status', (req, res) => {
             throw new Error("User not authenticated")
         }
     } catch (err) {
-        res.json(generateErrorPayload(err.message))
+        res.send(generateErrorPayload(err))
     }
 })
 
@@ -72,8 +72,10 @@ app.post('/register/', async (req, res, next) => {
 // ## Login
 app.post('/login/', async (req, res, next) => {
     try {
+        console.log(req.body)
         passport.authenticate("local", (err: Error, user, info: IVerifyOptions) => {
             if (err) { return next(err); }
+            user=req.body
             if (!user) {
                 res.send({ "error": true, message: info.message });
             }

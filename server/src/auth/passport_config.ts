@@ -9,10 +9,14 @@ const prisma = new PrismaClient()
 
 module.exports = function (passport: PassportStatic) {
     passport.serializeUser<User, any>((user: User, done: any) => {
-        done(null, user.email);
+        console.log("Serialize", user)
+        if (user) {
+            done(null, user.email);
+        }
     });
-    
+
     passport.deserializeUser(async (email: string, done) => {
+        console.log("Deserial", email)
         try {
             const instance = await prisma.user.findUnique({
                 where: {
@@ -27,10 +31,11 @@ module.exports = function (passport: PassportStatic) {
             done(err, false);
         }
     });
-    
-    
+
+
     passport.use(new LocalStrategy(async (email, password, done) => {
         try {
+            console.log(email, password)
             const instance = await prisma.user.findUnique({
                 where: {
                     email

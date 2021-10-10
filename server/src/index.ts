@@ -22,13 +22,13 @@ declare global {
 app.set('trust proxy', 1);
 
 // middleware function to force HTTPS
-app.use((req: Request, res: Response, next: any) => {
-    // The 'x-forwarded-proto' check is for Heroku
-    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
-        return res.redirect('https://' + req.get('host') + req.url);
-    }
-    next();
-});
+// app.use((req: Request, res: Response, next: any) => {
+//     // The 'x-forwarded-proto' check is for Heroku
+//     if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+//         return res.redirect('https://' + req.get('host') + req.url);
+//     }
+//     next();
+// });
 
 // Configuring connect pg for persistent sessions
 const pgSession = require('connect-pg-simple')(session);
