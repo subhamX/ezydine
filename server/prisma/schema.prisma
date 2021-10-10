@@ -18,9 +18,9 @@ model Spot {
   latitude        Decimal
   longitude       Decimal
   // TODO: See if we can find closed thing using timings only
-  isClosed        Boolean
   capacity        Int
   crowdCount      Int
+  imageLink       String     @default("/images/default.png")
   // START_TIME___END_TIME####START_TIME___END_TIME...
   timings         String
   ClientCountLogs CrowdLog[]

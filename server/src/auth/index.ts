@@ -30,6 +30,9 @@ app.get('/status', (req, res) => {
 // register a new user
 app.post('/register/', async (req, res, next) => {
     try {
+        
+        throw Error("Only the admin can create MANAGERS")
+
         const prisma = new PrismaClient();
         const instance = await prisma.user.findUnique({
             where: {
@@ -73,9 +76,9 @@ app.post('/register/', async (req, res, next) => {
 app.post('/login/', async (req, res, next) => {
     try {
         console.log(req.body)
-        passport.authenticate("local", (err: Error, user, info: IVerifyOptions) => {
+        passport.authenticate("local", (err: Error, user: any, info: IVerifyOptions) => {
+            console.log(err, user, info)
             if (err) { return next(err); }
-            user=req.body
             if (!user) {
                 res.send({ "error": true, message: info.message });
             }

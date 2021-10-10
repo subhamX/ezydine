@@ -8,8 +8,8 @@ const prisma = new PrismaClient()
 
 
 module.exports = function (passport: PassportStatic) {
-    passport.serializeUser<User, any>((user: User, done: any) => {
-        console.log("Serialize", user)
+    passport.serializeUser<any, any>((user: any, done: any) => {
+        console.log("Serialize", user, done)
         if (user) {
             done(null, user.email);
         }
@@ -24,7 +24,7 @@ module.exports = function (passport: PassportStatic) {
                 }
             });
             if (!instance) {
-                throw Error("username doesn't exist")
+                throw Error("email doesn't exist")
             }
             done(null, instance);
         } catch (err) {
@@ -33,7 +33,10 @@ module.exports = function (passport: PassportStatic) {
     });
 
 
-    passport.use(new LocalStrategy(async (email, password, done) => {
+    passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password'
+    }, async (email, password, done) => {
         try {
             console.log(email, password)
             const instance = await prisma.user.findUnique({

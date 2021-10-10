@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { PrismaClient } from '@prisma/client'
 import { generateErrorPayload } from "../utils/generate_err_payload";
+import dayjs from "dayjs";
+import { checkSpotStatus } from "../utils/check_spot_status";
 
 
 const app = Router()
@@ -14,7 +16,15 @@ const prisma = new PrismaClient()
 app.get('/all/', async (req, res) => {
     try {
         let data = await prisma.spot.findMany();
-        res.send(data);
+
+        // adding isClosed field
+        let finalData = data.map(e => {
+            return {
+                ...e,
+                isClosed: (checkSpotStatus(e) !== 'OPEN')
+            }
+        })
+        res.send(finalData);
     } catch (err) {
         res.send(generateErrorPayload(err))
     }
@@ -32,14 +42,40 @@ app.get('/info/:id', async (req, res) => {
                 spotId: parseInt(id)
             }
         });
+        if (!data) {
+            throw Error("Invalid spotId")
+        }
         let menuItems = await prisma.meal.findMany({
             where: {
                 spotId: parseInt(id)
             }
         })
+
+        let crowdData = await prisma.crowdLog.findMany({
+            where: {
+                spotId: parseInt(id)
+            }
+        })
+
+        let labels: string[] = [], dataValues: Number[] = [];
+        for (let d of crowdData) {
+            let tmp = dayjs(d['timestamp']).format('HH:mm')
+            labels.push(tmp)
+            dataValues.push(d['clientCount'])
+        }
+
+        let spotData = {
+            ...data,
+            isClosed: (checkSpotStatus(data) !== 'OPEN')
+        }
+
         res.send({
-            spotData: data,
-            menuItems
+            spotData,
+            menuItems,
+            crowdData: {
+                labels: labels,
+                data: dataValues
+            }
         });
     } catch (err) {
         res.send(generateErrorPayload(err))
@@ -52,10 +88,12 @@ app.get('/info/:id', async (req, res) => {
  */
 app.post('/add/', async (req, res) => {
     try {
-        // for now adminEmail is hardcoded!
-        if (true) {
+        if (req.isAuthenticated()) {
+            let adminEmail = req.user.email;
+            // authenticated users are either admin or manager
+            // and they are authorised to create a new spot
+
             let spotInfo = req.body;
-            console.log("ADDING")
             let newSpot = await prisma.spot.create({
                 data: {
                     hallName: spotInfo['hallName'],
@@ -63,13 +101,11 @@ app.post('/add/', async (req, res) => {
                     description: spotInfo['description'],
                     latitude: spotInfo['latitude'],
                     longitude: spotInfo['longitude'],
-                    isClosed: spotInfo['isClosed'],
                     capacity: spotInfo['capacity'],
                     crowdCount: spotInfo['crowdCount'],
-                    adminEmail: 'admin@columbia.edu'
+                    adminEmail
                 }
             })
-            console.log("aasa")
 
             res.send(newSpot);
         } else {
@@ -125,15 +161,25 @@ app.get('/crowdinfo/:id', async (req, res) => {
  */
 app.post('/log_crowd/add/', async (req, res) => {
     try {
+        if(req.isUnauthenticated()){
+            throw Error("You need to be authenticated to add logs")
+        }
         let data = req.body;
         // TODO: Validate
+        // checking and updating if there exists a spot with spotId
+        await prisma.spot.update({
+            where: {
+                spotId: data.spotId
+            },
+            data: {
+                crowdCount: data.clientCount
+            }
+        })
         // Secure it
         let results = await prisma.crowdLog.create({
             data: {
                 clientCount: data.clientCount,
                 timestamp: new Date(),
-                // while dev only
-                // timestamp: new Date(data.timestamp*1000),
                 spotId: data.spotId
             }
         })
@@ -146,17 +192,32 @@ app.post('/log_crowd/add/', async (req, res) => {
 
 app.post('/add_menu_item', async (req, res) => {
     try {
-        let data = req.body;
-        data['image'] = `https://source.unsplash.com/random?sig=${new Date()}`
-        data['spotId'] = 7; // hardcoded value for JJ's place
-        let results = await prisma.meal.create({
-            data
-        })
+        if (req.isAuthenticated()) {
+            let data = req.body;
+            let response = await prisma.spot.findUnique({
+                where: {
+                    spotId: data['spotId']
+                }
+            })
+            if (!response) {
+                throw Error("Invalid spotId")
+            }
 
-        res.send({
-            error: false,
-            data: results
-        })
+            if (response.adminEmail !== req.user.email) {
+                throw Error("You are not authorised to add a new menu to this store")
+            }
+            data['image'] = `https://source.unsplash.com/random?sig=${Date.now()}`
+            let results = await prisma.meal.create({
+                data
+            })
+
+            res.send({
+                error: false,
+                data: results
+            })
+        } else {
+            throw Error("User not authenticated");
+        }
 
     } catch (err) {
         res.send(generateErrorPayload(err))
@@ -165,3 +226,4 @@ app.post('/add_menu_item', async (req, res) => {
 })
 
 export default app;
+

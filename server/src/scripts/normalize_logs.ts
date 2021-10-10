@@ -1,4 +1,4 @@
-import axios from "axios";
+import { PrismaClient } from ".prisma/client";
 
 const crowdednessIdToEzyDineMap: any = {
     117: 1,
@@ -13,8 +13,7 @@ const crowdednessIdToEzyDineMap: any = {
     926: 10,
 }
 
-const serverUrl = 'http://localhost:8000/spot/log_crowd/add';
-
+let prisma = new PrismaClient();
 
 /**
  * Function to normalize the logs scraped from https://dining.columbia.edu/
@@ -28,17 +27,19 @@ export const normalizeLogs = async (logsText: string) => {
     for (let log of logs) {
         let data = log.split('\t')
         let indx = parseInt(data[1])
-        let timestamp = parseInt(data[0]), spotId = crowdednessIdToEzyDineMap[indx], client_count = parseInt(data[2]);
+        let timestamp = parseInt(data[0]) * 1000, spotId = crowdednessIdToEzyDineMap[indx], client_count = parseInt(data[2]);
         if (spotId) {
             console.log({
                 spotId,
                 timestamp,
                 clientCount: client_count
             })
-            await axios.post(serverUrl, {
-                spotId,
-                timestamp,
-                clientCount: client_count
+            await prisma.crowdLog.create({
+                data: {
+                    spotId,
+                    timestamp: new Date(timestamp),
+                    clientCount: client_count
+                }
             })
         }
     }
