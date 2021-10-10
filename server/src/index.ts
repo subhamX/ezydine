@@ -31,26 +31,27 @@ app.set('trust proxy', 1);
 // });
 
 // Configuring connect pg for persistent sessions
-const pgSession = require('connect-pg-simple')(session);
+// const pgSession = require('connect-pg-simple')(session);
 app.use(
     cors({
         origin: process.env.CLIENT_URL as string ?? '/',
         credentials: true,
     })
 );
+console.log(process.env.DATABASE_URL)
 // configuring express session
-app.use(
-    session({
-        store: new pgSession({
-            pool: new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } }),
-            tableName: 'session'
-        }),
-        saveUninitialized: false,
-        secret: (process.env.SESSION_SECRET as string ?? 'TEST'),
-        resave: false,
-        cookie: process.env.NODE_ENV === 'production' ? { secure: true, sameSite: 'strict' } : {},
-    })
-);
+// app.use(
+//     session({
+//         store: new pgSession({
+//             pool: new Pool({ connectionString: process.env.DATABASE_URL, ssl: false }),
+//             tableName: 'session'
+//         }),
+//         saveUninitialized: false,
+//         secret: (process.env.SESSION_SECRET as string ?? 'TEST'),
+//         resave: false,
+//         cookie: process.env.NODE_ENV === 'production' ? { secure: true, sameSite: 'strict' } : {},
+//     })
+// );
 // Configuring cookie and json parser middleware
 app.use(cookie_parser())
 

@@ -8,7 +8,6 @@ const app = Router()
 const prisma = new PrismaClient()
 
 
-
 /**
  * Returns all the dining spots
  */
@@ -54,8 +53,9 @@ app.get('/info/:id', async (req, res) => {
 app.post('/add/', async (req, res) => {
     try {
         // for now adminEmail is hardcoded!
-        if (req.isAuthenticated() || true) {
+        if (true) {
             let spotInfo = req.body;
+            console.log("ADDING")
             let newSpot = await prisma.spot.create({
                 data: {
                     hallName: spotInfo['hallName'],
@@ -69,6 +69,8 @@ app.post('/add/', async (req, res) => {
                     adminEmail: 'admin@columbia.edu'
                 }
             })
+            console.log("aasa")
+
             res.send(newSpot);
         } else {
             throw Error("Not Authenticated")
