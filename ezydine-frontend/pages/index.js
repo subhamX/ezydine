@@ -81,18 +81,18 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const [isLoading, setisLoading] = useState(true);
   const [data, setData] = useState("");
+  const [isLoading, setisLoading] = useState(true);
   if (isLoading) {
     return (
-      <div className="bg-purple-200 text-purple-700 font-bold rounded p-2">
+      <div className="text-center mx-2 bg-purple-200 text-purple-700 font-bold rounded p-2">
         Loading
       </div>
     );
   }
   const spots = data.slice(5, 8);
   return (
-    <div>
+    <div className='mb-40'>
       <Navbar />
       <Header />
       <div className="px-24 mt-10 grid lg:grid-cols-3 gap-10">

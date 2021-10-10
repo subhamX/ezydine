@@ -26,12 +26,15 @@ export default function App({ Component, pageProps }) {
       });
   }, []);
 
-  const [isLoading, setisLoading] = useState(true);
   const [errors, setErrors] = useState("");
 
+  const [isLoading, setisLoading] = useState(true);
   if (isLoading) {
-    // TODO: move it to some nice UI component. (along with withNoAuth)
-    return <div className=""></div>;
+    return (
+      <div className="text-center mx-2 bg-purple-200 text-purple-700 font-bold rounded p-2">
+        Loading
+      </div>
+    );
   }
 
   if (errors) {

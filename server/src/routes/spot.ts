@@ -22,11 +22,38 @@ app.get('/all/', async (req, res) => {
 })
 
 /**
+ * Returns the dining spot info of a single spot
+ * and the menu items
+ */
+app.get('/info/:id', async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = await prisma.spot.findUnique({
+            where: {
+                spotId: parseInt(id)
+            }
+        });
+        let menuItems = await prisma.meal.findMany({
+            where: {
+                spotId: parseInt(id)
+            }
+        })
+        res.send({
+            spotData: data,
+            menuItems
+        });
+    } catch (err) {
+        res.send(generateErrorPayload(err))
+    }
+})
+
+/**
  * Route to add a new spot
  * Later it can only be done by an [institute admin (sudo user)]
  */
 app.post('/add/', async (req, res) => {
     try {
+        // for now adminEmail is hardcoded!
         if (req.isAuthenticated() || true) {
             let spotInfo = req.body;
             let newSpot = await prisma.spot.create({
@@ -109,6 +136,26 @@ app.post('/log_crowd/add/', async (req, res) => {
             }
         })
         res.send(results)
+    } catch (err) {
+        res.send(generateErrorPayload(err))
+
+    }
+})
+
+app.post('/add_menu_item', async (req, res) => {
+    try {
+        let data = req.body;
+        data['image'] = `https://source.unsplash.com/random?sig=${new Date()}`
+        data['spotId'] = 7; // hardcoded value for JJ's place
+        let results = await prisma.meal.create({
+            data
+        })
+
+        res.send({
+            error: false,
+            data: results
+        })
+
     } catch (err) {
         res.send(generateErrorPayload(err))
 

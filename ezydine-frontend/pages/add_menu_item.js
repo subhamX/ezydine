@@ -57,13 +57,17 @@ const form_keys = [
 function AddMenuItem() {
   const router = useRouter();
 
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
-      let res = await axios.post(addMenuItemEndpoint, data, {
-        withCredentials: true,
+
+      let res = await axios.post(addMenuItemEndpoint,
+        data, {
+        withCredentials: true
       });
+
       console.log(res.data);
       console.log(res.data.message);
       if (!res.data.error) {
@@ -80,7 +84,6 @@ function AddMenuItem() {
   const [errors, setErrors] = useState("");
   const [isLoading, setIsLoading] = useState("");
   const [data, setData] = useState({
-    type: "",
     title: "",
     image: "",
     description: "",
@@ -95,7 +98,7 @@ function AddMenuItem() {
   });
   return (
     <div className="min-h-screen grid grid-cols-2  bg-gray-50  ">
-      <img src="/images/food1.jpg" className="max-h-screen" />
+      <img src="/images/food1.jpg" className="min-h-screen" />
       <div className="max-w-md w-full py-12 px-4 sm:px-6 lg:px-8 flex flex-col">
         <div>
           <Link href={`/`}>

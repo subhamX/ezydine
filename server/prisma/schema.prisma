@@ -56,7 +56,6 @@ model Meal {
   mealId              Int     @id @default(autoincrement())
   spotId              Int
   spot                Spot    @relation(fields: [spotId], references: [spotId])
-  type                String
   title               String
   image               String
   description         String

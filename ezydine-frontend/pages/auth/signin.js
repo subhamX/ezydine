@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { loginEndpoint } from "../../apis";
 import { useRouter } from "next/router";
+import { useUserStore } from "../../stores/useUserStore";
+
 
 export default function SignUp() {
   const router = useRouter();
+  const setUser = useUserStore((e) => e.setUser);
 
   const handleSubmit = async (e) => {
     try {
@@ -16,11 +19,15 @@ export default function SignUp() {
       let res = await axios.post(loginEndpoint, {
         email,
         password,
+      }, {
+        withCredentials: true
       });
       console.log(res.data);
       console.log(res.data.message);
       if (!res.data.error) {
+        setUser(res.data.user)
         router.push("/");
+
       } else {
         throw Error(res.data.message);
       }

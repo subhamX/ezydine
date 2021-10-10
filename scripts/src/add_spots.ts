@@ -11,16 +11,17 @@ export const addSpots = async () => {
     for (let spot of spots) {
         console.log(spot)
         let spotInfo: any = spot[1];
-        await axios.post(serverUrl, {
+        const results = await axios.post(serverUrl, {
             hallName: spotInfo['title'],
             description: spotInfo['description'],
             latitude: spotInfo['latitude'],
             longitude: spotInfo['longitude'],
             isClosed: false,
-            capacity: 800,
+            capacity: Math.floor(Math.random() * 800),
             timings: '09:00___12:00####14:00___16:00####21:00___23:00',
-            crowdCount: 200
+            crowdCount: Math.floor(Math.random() * 100)
         })
+        console.log(results.data)
     }
 }
 
