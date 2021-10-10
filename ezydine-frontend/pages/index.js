@@ -71,5 +71,4 @@ export default function Home({data}) {
       </div>
     </div>
   )
-  return (<div />)
 }

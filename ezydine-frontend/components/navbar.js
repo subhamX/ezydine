@@ -3,6 +3,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const navigation = [
   // { name: 'Dashboard', href: '#', current: true },
@@ -36,23 +37,16 @@ export default function Navbar() {
                <div className="flex-shrink-0 flex items-center">
                  <a className="home-link">
                    <Link href={`/`}>
-                     <img
-                       className="block lg:hidden h-8 w-auto"
-                       src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                       alt="Workflow"
+                     <Image
+                       className="block lg:hidden h-10 w-auto"
+                       src="/images/ezydine-logo.png"
+                       alt="Ezydine Logo"
+                       width="40"
+                       height="40"
                      />
                    </Link>
                  </a>
-                 <a>
-                   <Link href={`/`}>
 
-                   <img
-                     className="hidden lg:block h-8 w-auto"
-                     src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                     alt="Workflow"
-                   />
-                  </Link>
-                 </a>
                </div>
                <div className="hidden sm:block sm:ml-6">
                  <div className="flex space-x-4">
@@ -75,7 +69,7 @@ export default function Navbar() {
              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
              <a
                key="Manager Login"
-               href={'/'}
+               href={'/auth'}
                className={classNames(
                  'bg-gray-900 text-white',
                  'px-3 py-2 rounded-md text-sm font-medium'
