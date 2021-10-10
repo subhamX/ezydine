@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import { useEffect, useState } from 'react'
 import Navbar from '../../../components/navbar.js'
 import { fetchSingleSpotsEndpoint } from "../../../apis.js";
+import AdminDescription from "../../../components/AdminDescription.js";
 
 
 const products = [
@@ -135,7 +136,9 @@ export default function HallInfo() {
           </div>
         </div>
 
-        
+        <AdminDescription data={spotData} />
+
+
         <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">Menu Items</h2>
 
